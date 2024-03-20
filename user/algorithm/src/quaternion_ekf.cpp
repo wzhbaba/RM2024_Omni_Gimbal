@@ -42,6 +42,7 @@ static void IMU_QuaternionEKF_Observe(KalmanFilter_t *kf);
 static void IMU_QuaternionEKF_F_Linearization_P_Fading(KalmanFilter_t *kf);
 static void IMU_QuaternionEKF_SetH(KalmanFilter_t *kf);
 static void IMU_QuaternionEKF_xhatUpdate(KalmanFilter_t *kf);
+static int YawRoundCount = 0;
 
 /**
  * @brief Quaternion EKF initialization and some reference value
@@ -201,12 +202,12 @@ void IMU_QuaternionEKF_Update(float gx, float gy, float gz, float ax, float ay, 
     QEKF_INS.Roll = asinf(-2.0f * (QEKF_INS.q[1] * QEKF_INS.q[3] - QEKF_INS.q[0] * QEKF_INS.q[2])) * 57.295779513f;
 
     // get Yaw total, yaw数据可能会超过360,处理一下方便其他功能使用(如小陀螺)
-    if (QEKF_INS.Yaw - QEKF_INS.YawAngleLast > 180.0f) {
-        QEKF_INS.YawRoundCount--;
-    } else if (QEKF_INS.Yaw - QEKF_INS.YawAngleLast < -180.0f) {
-        QEKF_INS.YawRoundCount++;
+    if (QEKF_INS.Yaw - QEKF_INS.YawAngleLast > 300.0f) {
+        YawRoundCount--;
+    } else if (QEKF_INS.Yaw - QEKF_INS.YawAngleLast < -300.0f) {
+        YawRoundCount++;
     }
-    QEKF_INS.YawTotalAngle = 360.0f * QEKF_INS.YawRoundCount + QEKF_INS.Yaw;
+    QEKF_INS.YawTotalAngle = 360.0f * YawRoundCount + QEKF_INS.Yaw;
     QEKF_INS.YawAngleLast = QEKF_INS.Yaw;
     QEKF_INS.UpdateCount++;  // 初始化低通滤波用,计数测试用
 }

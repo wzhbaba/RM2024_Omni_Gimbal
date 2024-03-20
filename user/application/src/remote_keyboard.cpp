@@ -75,6 +75,12 @@ static void RemoteGimbalCtrl()
         gimbal.SetPitchPosition(remote.GetCh1() * 0.5f);
         gimbal.SetYawPosition(remote.GetCh0() * 0.5f);
     }
+
+    if (referee.GetKeyPress(KEY_G)) {
+        vision.SetReSetTracker(true);
+    } else {
+        vision.SetReSetTracker(false);
+    }
 }
 
 static void RemoteShootCtrl()
@@ -136,13 +142,13 @@ static void KeyboardChassisCtrl()
 
 static void KeyboardGimbalCtrl()
 {
-    // if (referee.GetKeyPress(MOUSE_R) && vision.GetTrack()) {
-    //     gimbal.SetVisionPitch(vision.GetTargetPitch());
-    //     // gimbal.SetVisionYaw(vision.GetTargetYaw());
-    // } else {
-    gimbal.SetPitchPosition(-referee.comma_data.mouse_y * 0.005f);
-    gimbal.SetYawPosition(referee.comma_data.mouse_x * 0.005f);
-    // }
+    if (referee.GetKeyPress(MOUSE_R) && vision.GetTrack()) {
+        gimbal.SetVisionPitch(vision.GetTargetPitch());
+        gimbal.SetVisionYaw(vision.GetTargetYaw());
+    } else {
+        gimbal.SetPitchPosition(-referee.comma_data.mouse_y * 0.005f);
+        gimbal.SetYawPosition(referee.comma_data.mouse_x * 0.005f);
+    }
 }
 
 static void KeyboardShootCtrl()
