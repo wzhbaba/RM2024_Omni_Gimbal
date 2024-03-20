@@ -36,7 +36,7 @@ void Vision::Init()
     st_.bullet_type = BULLET_17;
     st_.current_v = 28.0f;
 
-    st_.bias_time = 100.0f;
+    st_.bias_time = 150.0f;
     st_.s_bias = 0.134f;
     st_.z_bias = 0.0f;
 }
@@ -192,7 +192,6 @@ void Vision::Send()
     } else {
         send_.detect_color = 1;
     }
-    send_.reset_tracker = 0;
     send_.reserved = 0;
 
     send_.pitch = st_.current_pitch;

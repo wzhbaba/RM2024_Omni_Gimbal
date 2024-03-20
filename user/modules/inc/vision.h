@@ -124,6 +124,10 @@ class Vision
     float target_pitch_, target_yaw_;
     void Init();
     void Ctrl();
+    void SetReSetTracker(bool _data)
+    {
+        send_.reset_tracker = _data;
+    };
     bool GetTrack()
     {
         return rece_.tracking;
