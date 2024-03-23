@@ -103,7 +103,7 @@ static void RemoteShootCtrl()
 
     if (remote.GetS1() == 2) {
         shoot.SetFlag(SPEED_FLAG);
-        shoot.SetTriggerSpeed(-3.0f * 60 * 36.0f * 3.0f);
+        shoot.SetTriggerSpeed(-2.0f * 60 * 36.0f * 3.0f);
     }
 }
 
@@ -131,7 +131,7 @@ static void KeyboardChassisCtrl()
         board_comm.SetCapFlag(0);
     }
 
-    if (referee.GetKeyPress(KEY_SHIFT)) {
+    if (referee.GetKeyTick(KEY_SHIFT)) {
         chassis.SetWSpeed(2000.0f);
         board_comm.SetRotateFlag(1);
     } else {
@@ -156,7 +156,7 @@ static void KeyboardShootCtrl()
     if (board_comm.GetShooterOutput() == 1) {
         if (referee.GetKeyTick(KEY_F)) {
             board_comm.SetFricFlag(1);
-            shoot.SetFricSpeed(7500.0f);
+            shoot.SetFricSpeed(6900.0f);
             if (referee.GetKeyTick(KEY_R)) {
                 board_comm.SetShootFlag(1);
                 if (change_flag) {
@@ -191,7 +191,7 @@ static void KeyboardShootCtrl()
                 if (referee.GetKeyPress(MOUSE_L) == 1) {
                     shoot.SetFlag(SPEED_FLAG);
                     if (board_comm.GetCoolingLimit() - board_comm.GetCoolingHeat() > 40) {
-                        shoot.SetTriggerSpeed(-3.0f * 60 * 3 * 36.0f);
+                        shoot.SetTriggerSpeed(-2.0f * 60 * 3 * 36.0f);
                     } else {
                         shoot.SetTriggerSpeed(0.0f);
                     }
