@@ -54,7 +54,6 @@ osThreadId defaultTaskHandle;
 osThreadId insTaskHandle;
 osThreadId gimbalTaskHandle;
 osThreadId modeTaskHandle;
-osThreadId visionTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -65,7 +64,6 @@ void StartDefaultTask(void const *argument);
 void StartInsTask(void const *argument);
 void StartGimbalTask(void const *argument);
 void StartModeTask(void const *argument);
-void StartVisionTask(void const *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -127,12 +125,8 @@ void MX_FREERTOS_Init(void)
     gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
 
     /* definition and creation of modeTask */
-    osThreadDef(modeTask, StartModeTask, osPriorityNormal, 0, 128);
+    osThreadDef(modeTask, StartModeTask, osPriorityNormal, 0, 256);
     modeTaskHandle = osThreadCreate(osThread(modeTask), NULL);
-
-    /* definition and creation of visionTask */
-    osThreadDef(visionTask, StartVisionTask, osPriorityNormal, 0, 256);
-    visionTaskHandle = osThreadCreate(osThread(visionTask), NULL);
 
     /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -212,24 +206,6 @@ void StartModeTask(void const *argument)
         osDelay(1);
     }
     /* USER CODE END StartModeTask */
-}
-
-/* USER CODE BEGIN Header_StartVisionTask */
-/**
- * @brief Function implementing the visionTask thread.
- * @param argument: Not used
- * @retval None
- */
-/* USER CODE END Header_StartVisionTask */
-void StartVisionTask(void const *argument)
-{
-    /* USER CODE BEGIN StartVisionTask */
-    /* Infinite loop */
-    for (;;) {
-        VisionTask();
-        osDelay(2);
-    }
-    /* USER CODE END StartVisionTask */
 }
 
 /* Private application code --------------------------------------------------*/
