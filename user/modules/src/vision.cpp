@@ -46,6 +46,11 @@ float Vision::MonoDirectionalAirResistanceModel(float _s, float _v, float _ang)
     float z;
 
     t_ = (expf(st_.k * _s) - 1) / (st_.k * _v * arm_cos_f32(_ang));
+
+    if (t_ < 0) {
+        return 0;
+    }
+
     z = (_v * arm_sin_f32(_ang) * t_ - k_gravity * t_ * t_ / 2);
 
     return z;
@@ -67,6 +72,7 @@ float Vision::PitchTrajectoryCompensation(float _s, float _z, float _v)
             break;
         }
     }
+    t_ = 0.0f;
     return ang_pitch;
 }
 
@@ -155,9 +161,15 @@ void Vision::AutoSolveTrajectory()
     aim_x_ = tar_pos_[idx].x + st_.vxw * time_delay;
     aim_y_ = tar_pos_[idx].y + st_.vyw * time_delay;
     // 这里符号给错了
-    aim_pitch_ = PitchTrajectoryCompensation(sqrtf((aim_x_) * (aim_x_) + (aim_y_) * (aim_y_)) - st_.s_bias,
-                                             aim_z_ + st_.z_bias, st_.current_v);
-    aim_yaw_ = atan2f(aim_y_, aim_x_);
+    float temp_pitch = PitchTrajectoryCompensation(sqrtf((aim_x_) * (aim_x_) + (aim_y_) * (aim_y_)) - st_.s_bias,
+                                                   aim_z_ + st_.z_bias, st_.current_v);
+    if (temp_pitch) {
+        aim_pitch_ = temp_pitch;
+    }
+
+    if (aim_x_ || aim_y_) {
+        aim_yaw_ = atan2f(aim_y_, aim_x_);
+    }
 }
 
 void Vision::AngTrans()
@@ -184,7 +196,7 @@ void Vision::SetAngle()
     st_.current_yaw = INS.Yaw * DEGREE_2_RAD;
 }
 
-void Vision::Send()
+void Vision::Encode()
 {
     send_.header = 0x5A;
     if (board_comm.GetRobotID() > 100) {
@@ -202,18 +214,20 @@ void Vision::Send()
     send_.aim_z = aim_z_;
 
     send_.checksum = Get_CRC16_Check_Sum((uint8_t *)&send_, sizeof(send_packet) - 2, 0xffff);
+}
 
+void Vision::Send()
+{
+    SetAngle();
+    Encode();
     CDC_Transmit_FS((uint8_t *)&send_, sizeof(send_packet));
 }
 
 void Vision::Ctrl()
 {
-    dt_ = DWT_GetDeltaT(&dwt_cnt);
     Receive();
     if (rece_.tracking == 1) {
         AutoSolveTrajectory();
         AngTrans();
     }
-    SetAngle();
-    Send();
 }

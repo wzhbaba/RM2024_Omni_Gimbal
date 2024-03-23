@@ -40,7 +40,8 @@ extern "C" {
 void GimbalInit();
 void GimbalTask();
 void InfantryGimbalInit();
-void VisionTask();
+void VisionCallback();
+
 #ifdef __cplusplus
 }
 #endif

@@ -124,6 +124,7 @@ class Vision
     float target_pitch_, target_yaw_;
     void Init();
     void Ctrl();
+    void Send();
     void SetReSetTracker(bool _data)
     {
         send_.reset_tracker = _data;
@@ -144,7 +145,7 @@ class Vision
    private:
     void AutoSolveTrajectory();
     void Receive();
-    void Send();
+    void Encode();
     void SetAngle();
     void AngTrans();
     float MonoDirectionalAirResistanceModel(float _s, float _v, float _ang);

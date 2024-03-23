@@ -20,6 +20,7 @@
 #include "quaternion_ekf.h"
 #include "tim.h"
 #include "user_lib.h"
+#include "vision.h"
 /* Private macro -------------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 /* Private types -------------------------------------------------------------*/
@@ -152,6 +153,7 @@ void INS_Task(void)
         // 200hz
     }
 
+    vision.Send();
     count++;
 }
 
