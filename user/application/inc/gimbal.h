@@ -67,7 +67,7 @@ class Gimbal
      */
     void MotorInit();
 
-    float output_speed_[2]; /**< Array of output speeds for the motors. */
+    int16_t output_speed_[2]; /**< Array of output speeds for the motors. */
    private:
     float set_pitch_;
     float set_yaw_;
