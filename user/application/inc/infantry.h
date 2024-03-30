@@ -39,6 +39,7 @@ extern "C" {
 
 void GimbalInit();
 void GimbalTask();
+void ChassisTask();
 void InfantryGimbalInit();
 void VisionCallback();
 
