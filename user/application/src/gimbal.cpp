@@ -23,6 +23,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
 Gimbal gimbal;
+static float calc_tor;
 /* Private function prototypes -----------------------------------------------*/
 
 static void PitchMotorCallback();
@@ -33,14 +34,14 @@ static void YawMotorCallback();
  */
 void Gimbal::PidInit()
 {
-    angle_[0].Init(50.0f, 0.0f, 2.0f, 2000.0f, 0.0f);
-    speed_[0].Init(100.0f, 2.0f, 0.0f, 20000.0f, 0.0f);
-    angle_[1].Init(50.0f, 0.0f, 1.0f, 2000.0f, 0.0f);
-    speed_[1].Init(100.0f, 2.0f, 0.0f, 25000.0f, 0.0f);
+    angle_[0].Init(100.0f, 0.0f, 2.0f, 2000.0f, 0.0f);
+    speed_[0].Init(140.0f, 5000.0f, 0.0f, 16384.0f, 0.0f);
+    angle_[1].Init(50.0f, 0.0f, 0.2f, 2000.0f, 0.0f);
+    speed_[1].Init(110.0f, 4600.0f, 0.0f, 15000.0f, 0.0f);
     angle_[0].Inprovement(PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 0, 0, 0, 0, 0.05f);
-    speed_[0].Inprovement(PID_INTEGRAL_LIMIT | PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 3000, 0, 0, 0, 0.05f);
+    speed_[0].Inprovement(PID_INTEGRAL_LIMIT | PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 3000.0f, 0, 0, 0, 0.05f);
     angle_[1].Inprovement(PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 0, 0, 0, 0, 0.05f);
-    speed_[1].Inprovement(PID_INTEGRAL_LIMIT | PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 3000, 0, 0, 0, 0.05f);
+    speed_[1].Inprovement(PID_INTEGRAL_LIMIT | PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 3000.0f, 0, 0, 0, 0.05f);
 }
 
 /**
@@ -69,8 +70,10 @@ void Gimbal::Control()
     speed_[0].SetMeasure(INS.Gyro[X] * RAD_2_DEGREE);
     speed_[1].SetMeasure(INS.Gyro[Z] * RAD_2_DEGREE);
 
-    output_speed_[0] = (int16_t)speed_[0].Calculate() + 6000;
+    output_speed_[0] = (int16_t)speed_[0].Calculate();
     output_speed_[1] = (int16_t)speed_[1].Calculate();
+
+    calc_tor = -output_speed_[0];
 }
 
 /**

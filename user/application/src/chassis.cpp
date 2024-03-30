@@ -29,7 +29,7 @@ Chassis chassis;
 
 void Chassis::Init()
 {
-    follow_.Init(1.0f, 0.0f, 0.1f, 2000.0f, 0.0f);
+    follow_.Init(1.0f, 0.0f, 0.0f, 2000.0f, 0.0f);
     follow_.Inprovement(PID_INTEGRAL_LIMIT | PID_DERIVATIVE_ON_MEASUREMENT | PID_DERIVATIVE_FILTER, 200.0f, 0.0f, 0.0f, 0.0f, 0.05f);
 }
 
