@@ -54,6 +54,7 @@ osThreadId defaultTaskHandle;
 osThreadId insTaskHandle;
 osThreadId gimbalTaskHandle;
 osThreadId modeTaskHandle;
+osThreadId chassisTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -64,6 +65,7 @@ void StartDefaultTask(void const *argument);
 void StartInsTask(void const *argument);
 void StartGimbalTask(void const *argument);
 void StartModeTask(void const *argument);
+void StartChassisTask(void const *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -128,6 +130,10 @@ void MX_FREERTOS_Init(void)
     osThreadDef(modeTask, StartModeTask, osPriorityNormal, 0, 256);
     modeTaskHandle = osThreadCreate(osThread(modeTask), NULL);
 
+    /* definition and creation of chassisTask */
+    osThreadDef(chassisTask, StartChassisTask, osPriorityNormal, 0, 256);
+    chassisTaskHandle = osThreadCreate(osThread(chassisTask), NULL);
+
     /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
     /* USER CODE END RTOS_THREADS */
@@ -147,7 +153,8 @@ void StartDefaultTask(void const *argument)
     /* USER CODE BEGIN StartDefaultTask */
     /* Infinite loop */
     for (;;) {
-        osDelay(500);
+        HAL_GPIO_TogglePin(LED_B_GPIO_Port, LED_B_Pin);
+        osDelay(100);
     }
     /* USER CODE END StartDefaultTask */
 }
@@ -185,7 +192,7 @@ void StartGimbalTask(void const *argument)
     /* Infinite loop */
     for (;;) {
         GimbalTask();
-        osDelay(5);
+        osDelay(1);
     }
     /* USER CODE END StartGimbalTask */
 }
@@ -206,6 +213,24 @@ void StartModeTask(void const *argument)
         osDelay(1);
     }
     /* USER CODE END StartModeTask */
+}
+
+/* USER CODE BEGIN Header_StartChassisTask */
+/**
+ * @brief Function implementing the chassisTask thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartChassisTask */
+void StartChassisTask(void const *argument)
+{
+    /* USER CODE BEGIN StartChassisTask */
+    /* Infinite loop */
+    for (;;) {
+        ChassisTask();
+        osDelay(5);
+    }
+    /* USER CODE END StartChassisTask */
 }
 
 /* Private application code --------------------------------------------------*/

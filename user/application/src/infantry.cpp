@@ -24,6 +24,8 @@
 #include "shoot.h"
 #include "vision.h"
 /* Private macro -------------------------------------------------------------*/
+static float dt;
+static uint32_t dwt_cnt;
 /* Private constants ---------------------------------------------------------*/
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -58,17 +60,19 @@ void GimbalInit()
  */
 void GimbalTask()
 {
+    dt = DWT_GetDeltaT(&dwt_cnt);
     gimbal.Control();
     shoot.Control();
     chassis.Control();
-    board_comm.Send();
     if (remote.GetS2() == 1 || remote.GetS2() == 3) {
-        DjiMotorSend(&hcan1, 0x1FF, (int16_t)shoot.trig_output_, gimbal.output_speed_[1], 0, 0);
-        DjiMotorSend(&hcan2, 0x1FF, -gimbal.output_speed_[0], 0, 0, 0);
+        DjiMotorSend(&hcan1, 0x1FF, (int16_t)shoot.trig_output_, 0, 0, 0);
+        DjiMotorSend(&hcan1, 0x1FE, 0, gimbal.output_speed_[1], 0, 0);
+        DjiMotorSend(&hcan2, 0x1FE, -gimbal.output_speed_[0], 0, 0, 0);
         DjiMotorSend(&hcan2, 0x200, (int16_t)shoot.fric_output_[0], (int16_t)shoot.fric_output_[1], (int16_t)shoot.trig_output_, 0);
     } else {
         DjiMotorSend(&hcan1, 0x1FF, 0, 0, 0, 0);
-        DjiMotorSend(&hcan2, 0x1FF, 0, 0, 0, 0);
+        DjiMotorSend(&hcan1, 0x1FE, 0, 0, 0, 0);
+        DjiMotorSend(&hcan2, 0x1FE, 0, 0, 0, 0);
         DjiMotorSend(&hcan2, 0x200, 0, 0, 0, 0);
     }
 }
@@ -76,4 +80,9 @@ void GimbalTask()
 void VisionCallback()
 {
     vision.Ctrl();
+}
+
+void ChassisTask()
+{
+    board_comm.Send();
 }
