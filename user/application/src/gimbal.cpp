@@ -35,7 +35,7 @@ static void YawMotorCallback();
 void Gimbal::PidInit()
 {
     angle_[0].Init(100.0f, 0.0f, 2.0f, 2000.0f, 0.0f);
-    speed_[0].Init(140.0f, 5000.0f, 0.0f, 16384.0f, 0.0f);
+    speed_[0].Init(100.0f, 3000.0f, 0.0f, 15000.0f, 0.0f);
     angle_[1].Init(50.0f, 0.0f, 0.2f, 2000.0f, 0.0f);
     speed_[1].Init(110.0f, 4600.0f, 0.0f, 15000.0f, 0.0f);
     angle_[0].Inprovement(PID_DERIVATIVE_FILTER | PID_DERIVATIVE_ON_MEASUREMENT, 0, 0, 0, 0, 0.05f);
