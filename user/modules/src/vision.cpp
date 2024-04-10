@@ -36,7 +36,7 @@ void Vision::Init()
     st_.bullet_type = BULLET_17;
     st_.current_v = 28.0f;
 
-    st_.bias_time = 150.0f;
+    st_.bias_time = 120.0f;
     st_.s_bias = 0.134f;
     st_.z_bias = 0.0f;
 }
@@ -78,6 +78,17 @@ float Vision::PitchTrajectoryCompensation(float _s, float _z, float _v)
 
 void Vision::AutoSolveTrajectory()
 {
+    float center_yaw;
+    if (st_.yw == 0.0f) {
+        if (st_.xw > 0.0f) {
+            center_yaw = 0.0f;
+        } else {
+            center_yaw = PI;
+        }
+    } else {
+        center_yaw = atan2(st_.yw, st_.xw);
+    }
+
     float time_delay = st_.bias_time / 1000.0f + t_;
     st_.tar_yaw += st_.v_yaw * time_delay;
 
@@ -137,15 +148,15 @@ void Vision::AutoSolveTrajectory()
         // 2.计算距离最近的装甲板
 
         // 计算距离最近的装甲板
-        float dis_diff_min = sqrt(tar_pos_[0].x * tar_pos_[0].x + tar_pos_[0].y * tar_pos_[0].y);
-        int idx = 0;
-        for (i = 1; i < 4; i++) {
-            float temp_dis_diff = sqrt(tar_pos_[i].x * tar_pos_[0].x + tar_pos_[i].y * tar_pos_[0].y);
-            if (temp_dis_diff < dis_diff_min) {
-                dis_diff_min = temp_dis_diff;
-                idx = i;
-            }
-        }
+        // float dis_diff_min = sqrt(tar_pos_[0].x * tar_pos_[0].x + tar_pos_[0].y * tar_pos_[0].y);
+        // int idx = 0;
+        // for (i = 1; i < 4; i++) {
+        //     float temp_dis_diff = sqrt(tar_pos_[i].x * tar_pos_[0].x + tar_pos_[i].y * tar_pos_[0].y);
+        //     if (temp_dis_diff < dis_diff_min) {
+        //         dis_diff_min = temp_dis_diff;
+        //         idx = i;
+        //     }
+        // }
 
         // 计算枪管到目标装甲板yaw最小的那个装甲板
         // float yaw_diff_min = fabsf(aim_yaw_ - tar_pos_[0].yaw);
@@ -156,6 +167,18 @@ void Vision::AutoSolveTrajectory()
         //         idx = i;
         //     }
         // }
+        float yaw_diff_min = fabsf(center_yaw - tar_pos_[0].yaw);
+        if (yaw_diff_min > PI)
+            yaw_diff_min = 2 * PI - yaw_diff_min;
+        for (i = 1; i < 4; i++) {
+            float temp_yaw_diff = fabsf(center_yaw - tar_pos_[i].yaw);
+            if (temp_yaw_diff > PI)
+                temp_yaw_diff = 2 * PI - temp_yaw_diff;
+            if (temp_yaw_diff < yaw_diff_min) {
+                yaw_diff_min = temp_yaw_diff;
+                idx = i;
+            }
+        }
     }
     aim_z_ = tar_pos_[idx].z + st_.vzw * time_delay;
     aim_x_ = tar_pos_[idx].x + st_.vxw * time_delay;
