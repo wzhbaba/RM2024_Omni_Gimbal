@@ -86,7 +86,7 @@ static void RemoteGimbalCtrl()
 static void RemoteShootCtrl()
 {
     static uint8_t flag = 0;
-    shoot.SetFricSpeed(6800.0f);
+    shoot.SetFricSpeed(7100.0f);
 
     if (remote.GetS1() == 1) {
         flag = 1;
@@ -109,21 +109,8 @@ static void RemoteShootCtrl()
 
 static void KeyboardChassisCtrl()
 {
-    if (referee.GetKeyPress(KEY_W)) {
-        chassis.SetYSpeed(2000.0f);
-    } else if (referee.GetKeyPress(KEY_S)) {
-        chassis.SetYSpeed(-2000.0f);
-    } else {
-        chassis.SetYSpeed(0.0f);
-    }
-
-    if (referee.GetKeyPress(KEY_A)) {
-        chassis.SetXSpeed(-2000.0f);
-    } else if (referee.GetKeyPress(KEY_D)) {
-        chassis.SetXSpeed(2000.0f);
-    } else {
-        chassis.SetXSpeed(0.0f);
-    }
+    chassis.SetYSpeed(2000.0f * referee.GetKeyPress(KEY_W) - 2000.0f * referee.GetKeyPress(KEY_S));
+    chassis.SetXSpeed(2000.0f * referee.GetKeyPress(KEY_D) - 2000.0f * referee.GetKeyPress(KEY_A));
 
     if (referee.GetKeyTick(KEY_C)) {
         board_comm.SetCapFlag(1);
@@ -156,7 +143,7 @@ static void KeyboardShootCtrl()
     if (board_comm.GetShooterOutput() == 1) {
         if (referee.GetKeyTick(KEY_F)) {
             board_comm.SetFricFlag(1);
-            shoot.SetFricSpeed(6900.0f);
+            shoot.SetFricSpeed(7100.0f);
             if (referee.GetKeyTick(KEY_R)) {
                 board_comm.SetShootFlag(1);
                 if (change_flag) {
