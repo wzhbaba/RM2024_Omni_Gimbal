@@ -149,11 +149,11 @@ void INS_Task(void)
         IMU_Temperature_Ctrl();
     }
 
-    if ((count % 1000) == 0) {
+    if ((count % 5) == 0) {
         // 200hz
+        vision.Send();
     }
 
-    vision.Send();
     count++;
 }
 
