@@ -61,10 +61,10 @@ typedef struct {
     float xw;           // ROS坐标系下的x
     float yw;           // ROS坐标系下的y
     float zw;           // ROS坐标系下的z
+    float tar_yaw;      // 目标yaw
     float vxw;          // ROS坐标系下的vx
     float vyw;          // ROS坐标系下的vy
     float vzw;          // ROS坐标系下的vz
-    float tar_yaw;      // 目标yaw
     float v_yaw;        // 目标yaw速度
     float r1;           // 目标中心到前后装甲板的距离
     float r2;           // 目标中心到左右装甲板的距离
