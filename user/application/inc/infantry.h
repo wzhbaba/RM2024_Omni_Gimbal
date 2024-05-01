@@ -17,17 +17,6 @@
 #define __INFANTRY_H_
 
 #ifdef __cplusplus
-
-/* Includes ------------------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported types ------------------------------------------------------------*/
-/* Exported variables --------------------------------------------------------*/
-/* Exported function prototypes ----------------------------------------------*/
-
-#endif
-
-#ifdef __cplusplus
 extern "C" {
 #endif
 /* Includes ------------------------------------------------------------------*/
@@ -38,10 +27,11 @@ extern "C" {
 /* Exported function prototypes ----------------------------------------------*/
 
 void GimbalInit();
-void GimbalTask();
+void GimbalControllerTask();
 void ChassisTask();
 void InfantryGimbalInit();
 void VisionCallback();
+void MotorTask();
 
 #ifdef __cplusplus
 }

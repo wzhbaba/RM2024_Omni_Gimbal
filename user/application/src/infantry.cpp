@@ -58,12 +58,15 @@ void GimbalInit()
 /**
  * @brief This function handles the Gimbal task.
  */
-void GimbalTask()
+void GimbalControllerTask()
 {
-    dt = DWT_GetDeltaT(&dwt_cnt);
     gimbal.Control();
     shoot.Control();
     chassis.Control();
+}
+
+void MotorTask()
+{
     if (remote.GetS2() == 1 || remote.GetS2() == 3) {
         DjiMotorSend(&hcan1, 0x1FF, (int16_t)shoot.trig_output_, 0, 0, 0);
         DjiMotorSend(&hcan1, 0x1FE, 0, gimbal.output_speed_[1], 0, 0);
